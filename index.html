@@ -458,8 +458,8 @@ function renderMatches() {
     const flagH = FLAGS[m.Local] || '🏳️';
     const flagA = FLAGS[m.Visitante] || '🏳️';
     const pred  = prodes[m.ID] || {};
-    const h     = pendientes[m.ID]?.home ?? pred.home ?? '';
-    const a     = pendientes[m.ID]?.away ?? pred.away ?? '';
+    const h     = pendientes[m.ID]?.home !== undefined ? pendientes[m.ID].home : (pred.home !== undefined && pred.home !== '' ? pred.home : '');
+    const a     = pendientes[m.ID]?.away !== undefined ? pendientes[m.ID].away : (pred.away !== undefined && pred.away !== '' ? pred.away : '');
 
     const realH = m['Goles Local'];
     const realA = m['Goles Visitante'];
@@ -544,13 +544,20 @@ async function saveProde() {
   btn.disabled = true;
   try {
     await Promise.all(
-      Object.entries(pendientes).map(([id, scores]) =>
-        apiPost({ action:'guardarPronostico', usuario:currentUser, partidoId:id,
-          golesLocal: scores.home ?? '', golesVisitante: scores.away ?? '' })
-      )
+      Object.entries(pendientes).map(([id, scores]) => {
+        const existing = prodes[id] || {};
+        const homeVal = (scores.home !== undefined && scores.home !== '') ? scores.home : (existing.home !== '' ? existing.home : '');
+        const awayVal = (scores.away !== undefined && scores.away !== '') ? scores.away : (existing.away !== '' ? existing.away : '');
+        return apiPost({ action:'guardarPronostico', usuario:currentUser, partidoId:id,
+          golesLocal: homeVal, golesVisitante: awayVal });
+      })
     );
     Object.entries(pendientes).forEach(([id, scores]) => {
-      prodes[id] = { ...prodes[id], ...scores };
+      const existing = prodes[id] || {};
+      prodes[id] = {
+        home: scores.home !== undefined ? scores.home : existing.home,
+        away: scores.away !== undefined ? scores.away : existing.away
+      };
     });
     pendientes = {};
     document.getElementById('changed-count').textContent = '0';

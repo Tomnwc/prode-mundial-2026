@@ -590,11 +590,17 @@ function renderBracket() {
     const matches = allMatches.filter(m => m.Fase === fase.id);
     if (matches.length === 0 && fase.id !== 'octavos') return;
 
+    // Solo mostrar fases eliminatorias si tienen equipos reales
+    const hasRealTeams = matches.some(m => 
+      m.Local && m.Local !== '' && !m.Local.includes('Ganador') && !m.Local.includes('TBD') && !m.Local.includes('mejor')
+    );
+    if (matches.length > 0 && !hasRealTeams && fase.id !== 'dieciseisavos') return;
+
     html += `<div style="margin-bottom:2.5rem">`;
     html += `<div class="section-label" style="margin-bottom:1rem">${fase.label}</div>`;
     html += `<div class="bracket-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">`;
 
-    if (matches.length === 0) {
+    if (matches.length === 0 || !hasRealTeams) {
       html += `<div class="bracket-match"><span class="bracket-tbd">Se completa cuando clasifican los equipos</span></div>`;
     } else {
       matches.forEach(m => {

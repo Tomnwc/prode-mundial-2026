@@ -234,6 +234,7 @@
       <button class="phase-tab" id="tab-octavos" onclick="setPhase(this,'octavos')">octavos</button>
       <button class="phase-tab" id="tab-cuartos" onclick="setPhase(this,'cuartos')">cuartos</button>
       <button class="phase-tab" id="tab-semi" onclick="setPhase(this,'semi')">semi</button>
+      <button class="phase-tab" id="tab-tercero" onclick="setPhase(this,'tercero')">3er puesto</button>
       <button class="phase-tab" id="tab-final" onclick="setPhase(this,'final')">final</button>
     </div>
   </div>
@@ -446,6 +447,7 @@ function renderMatches() {
       octavos:'Los octavos de final se completan cuando pasan los equipos de 16avos.',
       cuartos:'Los cuartos de final se completan después de los octavos.',
       semi:'Las semifinales se completan después de los cuartos.',
+      tercero:'El partido por el tercer puesto se completa después de las semifinales.',
       final:'La final se completa después de las semifinales.',
     };
     container.innerHTML = `<p style="color:var(--muted);padding:2.5rem 0;font-size:.9rem;line-height:1.6">${msgs[currentPhase] || 'No hay partidos todavía.'}</p>`;
@@ -582,6 +584,7 @@ function renderBracket() {
     { id:'octavos', label:'Octavos de Final' },
     { id:'cuartos', label:'Cuartos de Final' },
     { id:'semi',    label:'Semifinales' },
+    { id:'tercero', label:'Tercer Puesto' },
     { id:'final',   label:'Final' },
   ];
 

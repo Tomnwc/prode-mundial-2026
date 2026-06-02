@@ -230,6 +230,7 @@
     <h2 class="section-title" style="margin-bottom:0">tus<br>pronósticos.</h2>
     <div class="phase-tabs">
       <button class="phase-tab active" onclick="setPhase(this,'grupos')">grupos</button>
+      <button class="phase-tab" id="tab-dieciseisavos" onclick="setPhase(this,'dieciseisavos')">16avos</button>
       <button class="phase-tab" id="tab-octavos" onclick="setPhase(this,'octavos')">octavos</button>
       <button class="phase-tab" id="tab-cuartos" onclick="setPhase(this,'cuartos')">cuartos</button>
       <button class="phase-tab" id="tab-semi" onclick="setPhase(this,'semi')">semi</button>
@@ -441,7 +442,8 @@ function renderMatches() {
 
   if (matches.length === 0) {
     const msgs = {
-      octavos:'Los octavos de final se completan cuando clasifican todos los equipos de grupos.',
+      dieciseisavos:'Los 16avos de final se completan cuando clasifican todos los equipos de grupos.',
+      octavos:'Los octavos de final se completan cuando pasan los equipos de 16avos.',
       cuartos:'Los cuartos de final se completan después de los octavos.',
       semi:'Las semifinales se completan después de los cuartos.',
       final:'La final se completa después de las semifinales.',
@@ -576,6 +578,7 @@ async function saveProde() {
 function renderBracket() {
   const container = document.getElementById('bracket-container');
   const fases = [
+    { id:'dieciseisavos', label:'16avos de Final' },
     { id:'octavos', label:'Octavos de Final' },
     { id:'cuartos', label:'Cuartos de Final' },
     { id:'semi',    label:'Semifinales' },

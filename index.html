@@ -419,26 +419,23 @@ async function apiPost(body) {
 // ─── INIT ────────────────────────────────────────────────────
 async function init() {
   updateNavUser();
-  showLoading(true);
   try {
     allMatches = await apiGet({ action:'getPartidos' });
-    if (currentUser) {
-      prodes = await apiGet({ action:'getPronosticos', usuario:currentUser });
-    }
     setStatus('actualizado hace un momento');
     renderMatches();
     renderBracket();
-    await loadBoard();
-    // Auto-refresh cada 5 minutos
-    setInterval(autoRefresh, 5 * 60 * 1000);
   } catch(e) {
     setStatus('modo demo — configurá el backend para datos reales');
     allMatches = DEMO_MATCHES;
     renderMatches();
     renderBracket();
-    renderBoard([]);
   }
-  showLoading(false);
+  if (currentUser) {
+    try { prodes = await apiGet({ action:'getPronosticos', usuario:currentUser }); } catch(e) { prodes = {}; }
+    renderMatches();
+  }
+  loadBoard();
+  setInterval(autoRefresh, 5 * 60 * 1000);
 }
 
 async function autoRefresh() {
@@ -788,9 +785,12 @@ function showError(msg) {
 async function loginAs(name) {
   currentUser = name;
   localStorage.setItem('prode-user', name);
-  try { prodes = await apiGet({ action:'getPronosticos', usuario:name }); } catch(e) { prodes = {}; }
-  updateNavUser(); renderMatches(); await loadBoard();
+  updateNavUser();
   showToast(`bienvenido, ${name} ✓`);
+  // Cargar datos en segundo plano sin bloquear
+  try { prodes = await apiGet({ action:'getPronosticos', usuario:name }); } catch(e) { prodes = {}; }
+  renderMatches();
+  loadBoard(); // no await — carga en background
 }
 
 async function logoutUser() {

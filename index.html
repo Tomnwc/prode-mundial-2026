@@ -215,12 +215,34 @@
   window.firebaseUpdateProfile = (user, profile) => user.updateProfile(profile);
 
   fbAuth.onAuthStateChanged((user) => {
+    // Solo actualizar estado silenciosamente, sin llamar loginAs automáticamente
     if (user) {
       window.currentUser = user.displayName || user.email;
       window._firebaseUser = user;
+      // Actualizar UI sin llamar a la API
+      const el = document.getElementById('nav-user');
+      const logoutBtn = document.getElementById('logout-btn');
+      if (el) {
+        el.textContent = window.currentUser + ' (salir)';
+        el.style.cursor = 'pointer';
+        el.onclick = window.logoutUser;
+      }
+      if (logoutBtn) logoutBtn.style.display = 'inline-block';
+      // Cerrar modal si estaba abierto
+      const modal = document.getElementById('modal-overlay');
+      if (modal && modal.classList.contains('open')) {
+        modal.classList.remove('open');
+        const btn = document.getElementById('modal-btn-login');
+        if (btn) { btn.textContent = 'entrar →'; btn.disabled = false; }
+      }
     } else {
       window.currentUser = null;
       window._firebaseUser = null;
+      const el = document.getElementById('nav-user');
+      if (el) {
+        el.textContent = '+ ingresar';
+        el.onclick = window.openModal;
+      }
     }
   });
 </script>
@@ -501,6 +523,8 @@ function renderMatches() {
     }
     const flagH = FLAGS[m.Local] || '🏳️';
     const flagA = FLAGS[m.Visitante] || '🏳️';
+    const localDisplay = m.Local || getBracketLabel(m.ID, 'local');
+    const visitanteDisplay = m.Visitante || getBracketLabel(m.ID, 'visitante');
     const pred  = prodes[m.ID] || {};
     const h     = pendientes[m.ID]?.home !== undefined ? pendientes[m.ID].home : (pred.home !== undefined && pred.home !== '' ? pred.home : '');
     const a     = pendientes[m.ID]?.away !== undefined ? pendientes[m.ID].away : (pred.away !== undefined && pred.away !== '' ? pred.away : '');
@@ -535,7 +559,7 @@ function renderMatches() {
     <div class="match-row">
       <div class="team">
         <span class="team-flag">${flagH}</span>
-        <span class="team-name">${m.Local}</span>
+        <span class="team-name">${localDisplay}</span>
       </div>
       <div class="score-box">
         <div class="score-inputs">
@@ -554,7 +578,7 @@ function renderMatches() {
       </div>
       <div class="team right">
         <span class="team-flag">${flagA}</span>
-        <span class="team-name">${m.Visitante}</span>
+        <span class="team-name">${visitanteDisplay}</span>
       </div>
       <span class="match-date">${m.Fecha}</span>
     </div>`;

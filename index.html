@@ -215,8 +215,13 @@
   window.firebaseUpdateProfile = (user, profile) => user.updateProfile(profile);
 
   fbAuth.onAuthStateChanged((user) => {
-    window.currentUser = user ? (user.displayName || user.email) : null;
-    if (window.onFirebaseUserLoaded) window.onFirebaseUserLoaded(user);
+    if (user) {
+      window.currentUser = user.displayName || user.email;
+      window._firebaseUser = user;
+    } else {
+      window.currentUser = null;
+      window._firebaseUser = null;
+    }
   });
 </script>
 </head>
@@ -878,7 +883,26 @@ function getBracketLabel(id, side) {
   return `<span style="opacity:.5;font-style:italic">${val}</span>`;
 }
 
-init();
+// Esperar a que Firebase confirme el estado de sesión antes de iniciar
+function waitForFirebase(callback) {
+  let attempts = 0;
+  const check = setInterval(() => {
+    attempts++;
+    if (window.firebaseAuth !== undefined) {
+      clearInterval(check);
+      // Esperar un tick para que onAuthStateChanged dispare
+      setTimeout(callback, 500);
+    }
+    if (attempts > 20) { clearInterval(check); callback(); }
+  }, 100);
+}
+
+waitForFirebase(() => {
+  if (window.currentUser) {
+    updateNavUser();
+  }
+  init();
+});
 </script>
 </body>
 </html>

@@ -358,7 +358,7 @@
     <div id="modal-error" style="color:#ff4444;font-size:.7rem;margin-top:.5rem;display:none"></div>
     <div class="modal-actions">
       <button class="btn" id="modal-btn-login" onclick="loginUser()">entrar →</button>
-      <button class="btn btn-outline" id="modal-btn-register" onclick="switchToRegister()" style="display:none">crear cuenta →</button>
+      <button class="btn btn-outline" id="modal-btn-register" onclick="loginUser()" style="display:none">crear cuenta →</button>
       <button class="btn btn-outline" onclick="closeModal()">cancelar</button>
     </div>
     <p style="font-size:.65rem;color:var(--muted);margin-top:1rem;cursor:pointer" id="modal-switch-link" onclick="switchToRegister()">¿Primera vez? Crear cuenta</p>
@@ -459,9 +459,9 @@ function showLoading(on) {
 function updateNavUser() {
   const el = document.getElementById('nav-user');
   if (currentUser) {
-    el.textContent = currentUser;
-    el.style.cursor = 'default';
-    el.onclick = null;
+    el.textContent = currentUser + ' (salir)';
+    el.style.cursor = 'pointer';
+    el.onclick = logoutUser;
   } else {
     el.textContent = '+ ingresar';
     el.onclick = openModal;
@@ -740,9 +740,10 @@ async function loginUser() {
       await loginAs(name);
       closeModal();
     } catch(e) {
+      console.error('Register error:', e.code, e.message);
       if (e.code === 'auth/email-already-in-use') showError('Ese mail ya tiene cuenta. Iniciá sesión.');
       else if (e.code === 'auth/weak-password') showError('La contraseña debe tener al menos 6 caracteres.');
-      else showError('Error al crear cuenta: ' + e.message);
+      else showError('Error: ' + e.code + ' — ' + e.message);
     }
   } else {
     try {
@@ -751,8 +752,9 @@ async function loginUser() {
       await loginAs(name);
       closeModal();
     } catch(e) {
+      console.error('Login error:', e.code, e.message);
       if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') showError('Mail o contraseña incorrectos.');
-      else showError('Error: ' + e.message);
+      else showError('Error: ' + e.code + ' — ' + e.message);
     }
   }
 }

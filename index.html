@@ -194,6 +194,39 @@
     .nav-right { gap:1rem; }
   }
 </style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMH3X7pixYbsKvJbGlkSlJFYxWfcYh4BQ",
+    authDomain: "prode-nwc-2026.firebaseapp.com",
+    projectId: "prode-nwc-2026",
+    storageBucket: "prode-nwc-2026.firebasestorage.app",
+    messagingSenderId: "667863476188",
+    appId: "1:667863476188:web:6e1558069315dc8c1d5119"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.firebaseAuth = auth;
+  window.firebaseCreateUser = createUserWithEmailAndPassword;
+  window.firebaseSignIn = signInWithEmailAndPassword;
+  window.firebaseOnAuthStateChanged = onAuthStateChanged;
+  window.firebaseSignOut = signOut;
+  window.firebaseUpdateProfile = updateProfile;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.currentUser = user.displayName || user.email;
+      if (window.onFirebaseReady) window.onFirebaseReady(user);
+    } else {
+      window.currentUser = null;
+      if (window.onFirebaseReady) window.onFirebaseReady(null);
+    }
+  });
+</script>
 </head>
 <body>
 
@@ -278,9 +311,7 @@
   <h2 class="section-title">¿querés<br>jugar?</h2>
   <div class="join-grid">
     <div class="join-card">
-      <label>tu nombre</label>
-      <input type="text" class="join-input" id="join-name" placeholder="cómo te llaman">
-      <label>código del grupo</label>
+<label>código del grupo</label>
       <input type="text" class="join-input" id="join-code" placeholder="MUNDIAL26" style="text-transform:uppercase;letter-spacing:.08em">
       <button class="btn btn-dark" onclick="joinGroup()" style="margin-top:0">entrar al grupo →</button>
     </div>
@@ -318,16 +349,27 @@
 
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
-    <h2>ingresá<br><span>al prode.</span></h2>
-    <p>Ponemos tu nombre y estás listo para cargar pronósticos.</p>
+    <h2 id="modal-title">ingresá<br><span>al prode.</span></h2>
+    <p id="modal-subtitle">Usá tu mail para entrar. Si es tu primera vez, creamos tu cuenta.</p>
     <div class="modal-field">
-      <label>tu nombre</label>
-      <input type="text" id="modal-name" placeholder="Diego Armando" onkeydown="if(event.key==='Enter')loginUser()">
+      <label>tu mail</label>
+      <input type="email" id="modal-email" placeholder="vos@mail.com">
     </div>
+    <div class="modal-field">
+      <label>contraseña</label>
+      <input type="password" id="modal-password" placeholder="mínimo 6 caracteres" onkeydown="if(event.key==='Enter')loginUser()">
+    </div>
+    <div class="modal-field" id="modal-name-field" style="display:none">
+      <label>tu nombre (como aparecés en el prode)</label>
+      <input type="text" id="modal-name" placeholder="Diego Armando">
+    </div>
+    <div id="modal-error" style="color:#ff4444;font-size:.7rem;margin-top:.5rem;display:none"></div>
     <div class="modal-actions">
-      <button class="btn" onclick="loginUser()">entrar →</button>
+      <button class="btn" id="modal-btn-login" onclick="loginUser()">entrar →</button>
+      <button class="btn btn-outline" id="modal-btn-register" onclick="switchToRegister()" style="display:none">crear cuenta →</button>
       <button class="btn btn-outline" onclick="closeModal()">cancelar</button>
     </div>
+    <p style="font-size:.65rem;color:var(--muted);margin-top:1rem;cursor:pointer" id="modal-switch-link" onclick="switchToRegister()">¿Primera vez? Crear cuenta</p>
   </div>
 </div>
 
@@ -611,11 +653,11 @@ function renderBracket() {
         <div class="bracket-match">
           <div class="bracket-match-id">${m.ID.toUpperCase()}</div>
           <div class="bracket-team">
-            <span class="bracket-team-name">${flagL} ${m.Local || '<span class="bracket-tbd">Por definir</span>'}</span>
+            <span class="bracket-team-name">${flagL} ${m.Local || getBracketLabel(m.ID, 'local')}</span>
             ${hasResult ? `<span class="bracket-score${localWon?' winner':''}">${m['Goles Local']}</span>` : ''}
           </div>
           <div class="bracket-team">
-            <span class="bracket-team-name">${flagV} ${m.Visitante || '<span class="bracket-tbd">Por definir</span>'}</span>
+            <span class="bracket-team-name">${flagV} ${m.Visitante || getBracketLabel(m.ID, 'visitante')}</span>
             ${hasResult ? `<span class="bracket-score${visitWon?' winner':''}">${m['Goles Visitante']}</span>` : ''}
           </div>
           <div class="bracket-date">${m.Fecha || ''}</div>
@@ -660,38 +702,89 @@ function renderBoard(tabla) {
 
 // ─── JOIN / LOGIN ─────────────────────────────────────────────
 async function joinGroup() {
-  const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
-  if (!name) { showToast('falta tu nombre'); return; }
   if (!code) { showToast('falta el código'); return; }
   if (code !== CODIGO_GRUPO) { showToast('código incorrecto'); return; }
-  try {
-    await apiPost({ action:'registrarUsuario', nombre:name, codigo:code });
-  } catch(e) {}
-  await loginAs(name);
-  scrollToSection('section-matches');
+  openModal();
+}
+
+let isRegisterMode = false;
+
+function switchToRegister() {
+  isRegisterMode = true;
+  document.getElementById('modal-title').innerHTML = 'crear<br><span>cuenta.</span>';
+  document.getElementById('modal-subtitle').textContent = 'Ingresá tu mail, elegí una contraseña y tu nombre.';
+  document.getElementById('modal-name-field').style.display = 'block';
+  document.getElementById('modal-btn-login').style.display = 'none';
+  document.getElementById('modal-btn-register').style.display = 'inline-block';
+  document.getElementById('modal-switch-link').textContent = '¿Ya tenés cuenta? Iniciar sesión';
+  document.getElementById('modal-switch-link').onclick = switchToLogin;
+}
+
+function switchToLogin() {
+  isRegisterMode = false;
+  document.getElementById('modal-title').innerHTML = 'ingresá<br><span>al prode.</span>';
+  document.getElementById('modal-subtitle').textContent = 'Usá tu mail para entrar.';
+  document.getElementById('modal-name-field').style.display = 'none';
+  document.getElementById('modal-btn-login').style.display = 'inline-block';
+  document.getElementById('modal-btn-register').style.display = 'none';
+  document.getElementById('modal-switch-link').textContent = '¿Primera vez? Crear cuenta';
+  document.getElementById('modal-switch-link').onclick = switchToRegister;
 }
 
 async function loginUser() {
-  const name = document.getElementById('modal-name').value.trim();
-  if (!name) return;
-  try {
-    await apiPost({ action:'registrarUsuario', nombre:name, codigo:CODIGO_GRUPO });
-  } catch(e) {}
-  await loginAs(name);
-  closeModal();
+  const email = document.getElementById('modal-email').value.trim();
+  const password = document.getElementById('modal-password').value;
+  const errorEl = document.getElementById('modal-error');
+  errorEl.style.display = 'none';
+  if (!email || !password) { showError('Completá mail y contraseña'); return; }
+
+  if (isRegisterMode) {
+    const name = document.getElementById('modal-name').value.trim();
+    if (!name) { showError('Ponés tu nombre para el prode'); return; }
+    try {
+      const cred = await window.firebaseCreateUser(window.firebaseAuth, email, password);
+      await window.firebaseUpdateProfile(cred.user, { displayName: name });
+      await loginAs(name);
+      closeModal();
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') showError('Ese mail ya tiene cuenta. Iniciá sesión.');
+      else if (e.code === 'auth/weak-password') showError('La contraseña debe tener al menos 6 caracteres.');
+      else showError('Error al crear cuenta: ' + e.message);
+    }
+  } else {
+    try {
+      const cred = await window.firebaseSignIn(window.firebaseAuth, email, password);
+      const name = cred.user.displayName || cred.user.email;
+      await loginAs(name);
+      closeModal();
+    } catch(e) {
+      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') showError('Mail o contraseña incorrectos.');
+      else showError('Error: ' + e.message);
+    }
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('modal-error');
+  el.textContent = msg; el.style.display = 'block';
 }
 
 async function loginAs(name) {
   currentUser = name;
   localStorage.setItem('prode-user', name);
-  try {
-    prodes = await apiGet({ action:'getPronosticos', usuario:name });
-  } catch(e) { prodes = {}; }
-  updateNavUser();
-  renderMatches();
-  await loadBoard();
+  try { prodes = await apiGet({ action:'getPronosticos', usuario:name }); } catch(e) { prodes = {}; }
+  updateNavUser(); renderMatches(); await loadBoard();
   showToast(`bienvenido, ${name} ✓`);
+}
+
+async function logoutUser() {
+  await window.firebaseSignOut(window.firebaseAuth);
+  currentUser = null;
+  localStorage.removeItem('prode-user');
+  prodes = {}; pendientes = {};
+  updateNavUser(); renderMatches(); renderBoard([]);
+  showToast('sesión cerrada');
 }
 
 // ─── UTILS ───────────────────────────────────────────────────
@@ -726,6 +819,54 @@ const DEMO_MATCHES = [
   {ID:'gG1',Fase:'grupos',Grupo:'Grupo G',Local:'Brasil',Visitante:'Turquía',Fecha:'14 jun','Goles Local':'','Goles Visitante':''},
   {ID:'gH1',Fase:'grupos',Grupo:'Grupo H',Local:'Portugal',Visitante:'Chequia',Fecha:'15 jun','Goles Local':'','Goles Visitante':''},
 ];
+
+
+function getBracketLabel(id, side) {
+  const labels = {
+    // 16avos
+    d1:  { local:'1° Grupo A', visitante:'2° Grupo B' },
+    d2:  { local:'1° Grupo C', visitante:'2° Grupo D' },
+    d3:  { local:'1° Grupo E', visitante:'2° Grupo F' },
+    d4:  { local:'1° Grupo G', visitante:'2° Grupo H' },
+    d5:  { local:'1° Grupo I', visitante:'2° Grupo J' },
+    d6:  { local:'1° Grupo K', visitante:'2° Grupo L' },
+    d7:  { local:'1° Grupo B', visitante:'2° Grupo A' },
+    d8:  { local:'1° Grupo D', visitante:'2° Grupo C' },
+    d9:  { local:'1° Grupo F', visitante:'2° Grupo E' },
+    d10: { local:'1° Grupo H', visitante:'2° Grupo G' },
+    d11: { local:'1° Grupo J', visitante:'2° Grupo I' },
+    d12: { local:'1° Grupo L', visitante:'2° Grupo K' },
+    d13: { local:'3° mejor (TBD)', visitante:'3° mejor (TBD)' },
+    d14: { local:'3° mejor (TBD)', visitante:'3° mejor (TBD)' },
+    d15: { local:'3° mejor (TBD)', visitante:'3° mejor (TBD)' },
+    d16: { local:'3° mejor (TBD)', visitante:'3° mejor (TBD)' },
+    // Octavos
+    o1:  { local:'Gan. D1', visitante:'Gan. D2' },
+    o2:  { local:'Gan. D3', visitante:'Gan. D4' },
+    o3:  { local:'Gan. D5', visitante:'Gan. D6' },
+    o4:  { local:'Gan. D7', visitante:'Gan. D8' },
+    o5:  { local:'Gan. D9', visitante:'Gan. D10' },
+    o6:  { local:'Gan. D11', visitante:'Gan. D12' },
+    o7:  { local:'Gan. D13', visitante:'Gan. D14' },
+    o8:  { local:'Gan. D15', visitante:'Gan. D16' },
+    // Cuartos
+    q1:  { local:'Gan. O1', visitante:'Gan. O2' },
+    q2:  { local:'Gan. O3', visitante:'Gan. O4' },
+    q3:  { local:'Gan. O5', visitante:'Gan. O6' },
+    q4:  { local:'Gan. O7', visitante:'Gan. O8' },
+    // Semis
+    s1:  { local:'Gan. Q1', visitante:'Gan. Q2' },
+    s2:  { local:'Gan. Q3', visitante:'Gan. Q4' },
+    // Tercer puesto
+    tp1: { local:'Per. S1', visitante:'Per. S2' },
+    // Final
+    f1:  { local:'Gan. S1', visitante:'Gan. S2' },
+  };
+  const entry = labels[id.toLowerCase()];
+  if (!entry) return '<span style="opacity:.4;font-style:italic">Por definir</span>';
+  const val = entry[side];
+  return `<span style="opacity:.5;font-style:italic">${val}</span>`;
+}
 
 init();
 </script>

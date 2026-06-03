@@ -306,6 +306,7 @@
 <label>código del grupo</label>
       <input type="text" class="join-input" id="join-code" placeholder="MUNDIAL26" style="text-transform:uppercase;letter-spacing:.08em">
       <button class="btn btn-dark" onclick="joinGroup()" style="margin-top:0">entrar al grupo →</button>
+      <button class="btn btn-outline" id="logout-btn" onclick="logoutUser()" style="margin-top:.5rem;display:none">cerrar sesión</button>
     </div>
     <div class="join-info">
       <p>Ingresá con el código que te dio el organizador. Una vez adentro podés cargar tus pronósticos antes de cada partido.</p>
@@ -458,13 +459,16 @@ function showLoading(on) {
 
 function updateNavUser() {
   const el = document.getElementById('nav-user');
+  const logoutBtn = document.getElementById('logout-btn');
   if (currentUser) {
     el.textContent = currentUser + ' (salir)';
     el.style.cursor = 'pointer';
     el.onclick = logoutUser;
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
   } else {
     el.textContent = '+ ingresar';
     el.onclick = openModal;
+    if (logoutBtn) logoutBtn.style.display = 'none';
   }
 }
 
@@ -731,9 +735,17 @@ async function loginUser() {
   errorEl.style.display = 'none';
   if (!email || !password) { showError('Completá mail y contraseña'); return; }
 
+  // Mostrar loading en el botón activo
+  const activeBtn = isRegisterMode
+    ? document.getElementById('modal-btn-register')
+    : document.getElementById('modal-btn-login');
+  const originalText = activeBtn.textContent;
+  activeBtn.textContent = isRegisterMode ? 'creando cuenta...' : 'entrando...';
+  activeBtn.disabled = true;
+
   if (isRegisterMode) {
     const name = document.getElementById('modal-name').value.trim();
-    if (!name) { showError('Ponés tu nombre para el prode'); return; }
+    if (!name) { showError('Ponés tu nombre para el prode'); activeBtn.textContent = originalText; activeBtn.disabled = false; return; }
     try {
       const cred = await window.firebaseCreateUser(window.firebaseAuth, email, password);
       await window.firebaseUpdateProfile(cred.user, { displayName: name });
@@ -744,6 +756,8 @@ async function loginUser() {
       if (e.code === 'auth/email-already-in-use') showError('Ese mail ya tiene cuenta. Iniciá sesión.');
       else if (e.code === 'auth/weak-password') showError('La contraseña debe tener al menos 6 caracteres.');
       else showError('Error: ' + e.code + ' — ' + e.message);
+      activeBtn.textContent = originalText;
+      activeBtn.disabled = false;
     }
   } else {
     try {
@@ -755,6 +769,8 @@ async function loginUser() {
       console.error('Login error:', e.code, e.message);
       if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') showError('Mail o contraseña incorrectos.');
       else showError('Error: ' + e.code + ' — ' + e.message);
+      activeBtn.textContent = originalText;
+      activeBtn.disabled = false;
     }
   }
 }

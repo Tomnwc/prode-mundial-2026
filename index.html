@@ -532,6 +532,8 @@ function renderMatches() {
     const realH = m['Goles Local'];
     const realA = m['Goles Visitante'];
     const hasResult = realH !== '' && realA !== '' && realH !== undefined && realA !== undefined;
+    const fechaPartido = m.Fecha ? new Date(m.Fecha) : null;
+    const cerrado = fechaPartido && !isNaN(fechaPartido) && (fechaPartido - new Date()) < 60 * 60 * 1000;
 
     let resultBadge = '';
     let predBadge = '';
@@ -574,6 +576,7 @@ function renderMatches() {
             oninput="setScore('${m.ID}','away',this.value,this)">
         </div>
         ${resultBadge}
+        ${!hasResult && cerrado ? '<span class="result-badge" style="opacity:.6">cerrado</span>' : ''}
         ${predBadge}
       </div>
       <div class="team right">

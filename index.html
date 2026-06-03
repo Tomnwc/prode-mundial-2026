@@ -194,10 +194,9 @@
     .nav-right { gap:1rem; }
   }
 </style>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyDMH3X7pixYbsKvJbGlkSlJFYxWfcYh4BQ",
     authDomain: "prode-nwc-2026.firebaseapp.com",
@@ -206,25 +205,18 @@
     messagingSenderId: "667863476188",
     appId: "1:667863476188:web:6e1558069315dc8c1d5119"
   };
+  firebase.initializeApp(firebaseConfig);
+  const fbAuth = firebase.auth();
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  window.firebaseAuth = fbAuth;
+  window.firebaseCreateUser = (auth, email, pass) => auth.createUserWithEmailAndPassword(email, pass);
+  window.firebaseSignIn = (auth, email, pass) => auth.signInWithEmailAndPassword(email, pass);
+  window.firebaseSignOut = (auth) => auth.signOut();
+  window.firebaseUpdateProfile = (user, profile) => user.updateProfile(profile);
 
-  window.firebaseAuth = auth;
-  window.firebaseCreateUser = createUserWithEmailAndPassword;
-  window.firebaseSignIn = signInWithEmailAndPassword;
-  window.firebaseOnAuthStateChanged = onAuthStateChanged;
-  window.firebaseSignOut = signOut;
-  window.firebaseUpdateProfile = updateProfile;
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      window.currentUser = user.displayName || user.email;
-      if (window.onFirebaseReady) window.onFirebaseReady(user);
-    } else {
-      window.currentUser = null;
-      if (window.onFirebaseReady) window.onFirebaseReady(null);
-    }
+  fbAuth.onAuthStateChanged((user) => {
+    window.currentUser = user ? (user.displayName || user.email) : null;
+    if (window.onFirebaseUserLoaded) window.onFirebaseUserLoaded(user);
   });
 </script>
 </head>

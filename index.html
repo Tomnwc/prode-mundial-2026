@@ -727,7 +727,16 @@ async function joinGroup() {
   const code = document.getElementById('join-code').value.trim().toUpperCase();
   if (!code) { showToast('falta el código'); return; }
   if (code !== CODIGO_GRUPO) { showToast('código incorrecto'); return; }
-  openModal();
+  
+  if (currentUser) {
+    // Ya está logueado, registrar directo
+    try { await apiPost({ action:'registrarUsuario', nombre:currentUser, codigo:code }); } catch(e) {}
+    showToast(`¡Bienvenido al grupo, ${currentUser}! ✓`);
+    scrollToSection('section-matches');
+  } else {
+    // No está logueado, abrir modal
+    openModal();
+  }
 }
 
 let isRegisterMode = false;

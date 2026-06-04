@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Prode by Cachorros · Mundial 2026</title>
+<title>newcycle ft. The Prode · Mundial 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -193,120 +193,6 @@
     .join-grid { grid-template-columns:1fr; }
     .nav-right { gap:1rem; }
   }
-
-  /* ── CACHORROS RETRO OVERRIDES ── */
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400;1,600&family=Space+Mono:wght@400;700&display=swap');
-
-  body {
-    background: #e8e0d4 !important;
-    color: #1c1612 !important;
-    font-family: 'Space Mono', monospace !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E") !important;
-  }
-  nav {
-    background: rgba(242,234,216,.95) !important;
-    border-bottom: 2px solid #1c1612 !important;
-  }
-  .nav-logo { color: #1c1612 !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 1.3rem !important; }
-  .nav-logo strong { color: #e8491e !important; }
-  .nav-link { color: rgba(28,22,18,.45) !important; }
-  .nav-link:hover { color: #1c1612 !important; }
-  .nav-user { color: #e8491e !important; border: 1.5px solid #e8491e !important; padding: .3rem .7rem; }
-  .nav-user:hover { background: #e8491e !important; color: #f2ead8 !important; }
-
-  .hero { background: #f2ead8 !important; border-bottom: 2px solid #1c1612 !important; }
-  .hero-eyebrow { color: #4a5240 !important; }
-  .hero-title { color: #1c1612 !important; font-family: 'Bebas Neue', sans-serif !important; font-size: clamp(3.5rem,10vw,9rem) !important; line-height: .93 !important; }
-  .hero-title .accent { color: #e8491e !important; font-family: 'Bebas Neue', sans-serif !important; font-style: normal !important; }
-  .hero-deco { color: rgba(28,22,18,.04) !important; }
-  .hero-sub { color: rgba(28,22,18,.5) !important; font-family: 'Crimson Pro', serif !important; font-style: italic; }
-  .hero-meta { color: rgba(28,22,18,.4) !important; }
-  .btn { background: #e8491e !important; color: #f2ead8 !important; border: 2px solid #e8491e !important; font-family: 'Space Mono', monospace !important; }
-  .btn:hover { background: transparent !important; color: #e8491e !important; }
-  .btn-outline { background: transparent !important; color: #1c1612 !important; border: 2px solid #1c1612 !important; }
-  .btn-outline:hover { background: #1c1612 !important; color: #f2ead8 !important; }
-
-  section { border-bottom: 2px solid #1c1612 !important; }
-  .section-label { color: #e8491e !important; }
-  .section-title { color: #1c1612 !important; font-family: 'Bebas Neue', sans-serif !important; }
-  .matches-section { background: #e8e0d4 !important; }
-  .phase-tab { color: rgba(28,22,18,.45) !important; border: 1.5px solid rgba(28,22,18,.15) !important; font-family: 'Space Mono', monospace !important; }
-  .phase-tab.active { background: #e8491e !important; color: #f2ead8 !important; border-color: #e8491e !important; }
-  .phase-tab:hover:not(.active) { border-color: #1c1612 !important; color: #1c1612 !important; }
-  .group-label { color: #4a5240 !important; border-top: 1.5px solid rgba(28,22,18,.15) !important; }
-  .match-row { border-bottom: 1px solid rgba(28,22,18,.08) !important; }
-  .team-name { color: #1c1612 !important; }
-  .score-input { background: #f2ead8 !important; border: 1.5px solid rgba(28,22,18,.15) !important; color: #1c1612 !important; }
-  .score-input:focus { border-color: #e8491e !important; }
-  .score-input.filled { color: #e8491e !important; border-color: rgba(232,73,30,.4) !important; }
-  .score-sep { color: rgba(28,22,18,.4) !important; }
-  .match-date { color: rgba(28,22,18,.4) !important; }
-  .result-badge { color: #e8491e !important; background: rgba(232,73,30,.1) !important; border: 1px solid rgba(232,73,30,.25) !important; }
-  .pred-badge.exacto { color: #e8491e !important; }
-  .pred-badge.correcto { color: #4a5240 !important; }
-  .status-dot { background: #e8491e !important; }
-  #status-text { color: rgba(28,22,18,.45) !important; }
-
-  .bracket-section { background: #f2ead8 !important; }
-  .bracket-match { background: #e8e0d4 !important; border: 1.5px solid rgba(28,22,18,.15) !important; }
-  .bracket-match-id { color: rgba(28,22,18,.4) !important; }
-  .bracket-team-name { color: #1c1612 !important; }
-  .bracket-score { color: #1c1612 !important; font-family: 'Bebas Neue', sans-serif !important; }
-  .bracket-score.winner { color: #e8491e !important; }
-  .bracket-date { color: rgba(28,22,18,.4) !important; }
-  .bracket-tbd { color: rgba(28,22,18,.4) !important; }
-
-  .board-section { background: #1c1612 !important; }
-  .board-section .section-label { color: #e8491e !important; }
-  .board-section .section-title { color: #f2ead8 !important; }
-  .board-table th { color: rgba(242,234,216,.35) !important; border-bottom: 1px solid rgba(242,234,216,.1) !important; }
-  .board-row { color: #f2ead8 !important; }
-  .board-row:hover { background: rgba(242,234,216,.04) !important; }
-  .board-row.me { background: rgba(232,73,30,.08) !important; }
-  .board-rank { color: rgba(242,234,216,.25) !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 1.3rem !important; }
-  .rank-gold { color: #e8491e !important; }
-  .rank-silver { color: #c4a882 !important; }
-  .rank-bronze { color: #4a5240 !important; }
-  .board-name { color: #f2ead8 !important; }
-  .board-pts { font-family: 'Bebas Neue', sans-serif !important; font-size: 1.8rem !important; color: #f2ead8 !important; }
-  .board-pts.top { color: #e8491e !important; }
-  .board-detail { color: rgba(242,234,216,.35) !important; }
-  .board-detail span { color: #e8491e !important; }
-  .board-name .me-tag { color: #e8491e !important; }
-
-  .join-section { background: #e8491e !important; }
-  .join-section .section-label { color: rgba(242,234,216,.6) !important; }
-  .join-section .section-title { color: #f2ead8 !important; }
-  .join-grid { background: rgba(28,22,18,.2) !important; }
-  .join-card { background: #e8491e !important; }
-  .join-card label { color: rgba(242,234,216,.6) !important; }
-  .join-input { color: #f2ead8 !important; border-bottom: 1.5px solid rgba(242,234,216,.4) !important; font-family: 'Space Mono', monospace !important; }
-  .join-input::placeholder { color: rgba(242,234,216,.35) !important; }
-  .join-info { background: rgba(28,22,18,.12) !important; }
-  .join-info p { color: rgba(242,234,216,.8) !important; font-family: 'Crimson Pro', serif !important; }
-  .pts-label { color: rgba(242,234,216,.7) !important; }
-  .pts-val { color: #f2ead8 !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 1.6rem !important; }
-  .pts-row { border-bottom: 1px solid rgba(242,234,216,.15) !important; }
-
-  .save-bar { background: #1c1612 !important; border-top: 2px solid #e8491e !important; }
-  .save-bar p { color: rgba(242,234,216,.6) !important; }
-  .save-bar strong { color: #e8491e !important; }
-
-  .modal { background: #f2ead8 !important; border: 2px solid #1c1612 !important; }
-  .modal-overlay { background: rgba(28,22,18,.92) !important; }
-  .modal h2 { color: #1c1612 !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 3rem !important; }
-  .modal h2 span { color: #e8491e !important; }
-  .modal p { color: rgba(28,22,18,.5) !important; font-family: 'Crimson Pro', serif !important; }
-  .modal-field label { color: rgba(28,22,18,.5) !important; }
-  .modal-field input { color: #1c1612 !important; border-bottom: 1.5px solid rgba(28,22,18,.15) !important; font-family: 'Space Mono', monospace !important; }
-  .modal-field input:focus { border-color: #e8491e !important; }
-  #modal-error { color: #c53d16 !important; }
-  #modal-switch-link { color: rgba(28,22,18,.45) !important; }
-
-  .toast { background: #1c1612 !important; color: #f2ead8 !important; border: 1px solid #e8491e !important; }
-  footer { background: #1c1612 !important; border-top: 2px solid #1c1612 !important; }
-  footer p { color: rgba(242,234,216,.25) !important; }
-
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -366,7 +252,7 @@
 <div id="loading-bar" style="opacity:0"></div>
 
 <nav>
-  <span class="nav-logo">THE PRODE <strong>BY CACHORROS</strong></span>
+  <span class="nav-logo">newcycle <strong>ft.</strong> The Prode</span>
   <div class="nav-right">
     <span class="nav-link" onclick="scrollToSection('section-matches')">partidos</span>
     <span class="nav-link" onclick="scrollToSection('section-bracket')">llaves</span>
@@ -379,12 +265,12 @@
 
 <section class="hero">
   <div class="hero-deco">26</div>
-  <p class="hero-eyebrow fade-up">The Prode by Cachorros · Mundial 2026</p>
+  <p class="hero-eyebrow fade-up">newcycle ft. The Prode · Mundial 2026</p>
   <h1 class="hero-title fade-up-2">
-    THE PRODE<br>
-    <span class="accent">by Cachorros.</span>
+    newcycle<br>
+    <span class="accent">ft. The Prode.</span>
   </h1>
-  <p class="hero-sub fade-up-3">Cargá tus pronósticos, competí con los Cachorros y demostrá que sabés más que nadie.</p>
+  <p class="hero-sub fade-up-3">Cargá tus pronósticos, competí con el grupo y demostrá que sabés más que nadie.</p>
   <button class="btn fade-up-3" onclick="scrollToSection('section-matches')">ver partidos →</button>
   <p class="hero-meta">©2026 · people first.</p>
   <p class="hero-meta-right">usa · canada · mexico</p>
@@ -482,7 +368,7 @@
   <div class="join-grid">
     <div class="join-card">
 <label>código del grupo</label>
-      <input type="text" class="join-input" id="join-code" placeholder="CACHORROS26" style="text-transform:uppercase;letter-spacing:.08em">
+      <input type="text" class="join-input" id="join-code" placeholder="MUNDIAL26" style="text-transform:uppercase;letter-spacing:.08em">
       <button class="btn btn-dark" onclick="joinGroup()" style="margin-top:0">entrar al grupo →</button>
       <button class="btn btn-outline" id="logout-btn" onclick="logoutUser()" style="margin-top:.5rem;display:none">cerrar sesión</button>
     </div>
@@ -507,7 +393,7 @@
 </section>
 
 <footer>
-  <p>The Prode by Cachorros · Mundial 2026</p>
+  <p>newcycle ft. The Prode · Mundial 2026</p>
   <p>hecho con ♥ en Buenos Aires</p>
 </footer>
 
@@ -520,7 +406,7 @@
 
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
-    <h2 id="modal-title">entrar al<br><span>prode.</span></h2>
+    <h2 id="modal-title">ingresá<br><span>al prode.</span></h2>
     <p id="modal-subtitle">Usá tu mail para entrar. Si es tu primera vez, creamos tu cuenta.</p>
     <div class="modal-field">
       <label>tu mail</label>
@@ -549,8 +435,8 @@
 // ════════════════════════════════════════════════════════════
 //  CONFIG — Reemplazá API_URL con la URL de tu Web App
 // ════════════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbys13FJjScmQiK2ttpiJoyODkIr15F2OHiHw6g0s9yIpez4xlMydmpzJlqcZ5LonfBd/exec';
-const CODIGO_GRUPO = 'CACHORROS26';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyH9CyXm3dpm5VocxYTURs0MtekLz3Mk_JtOhmP8oaXD1hSTfxMAgupXdhVccss2Bbs/exec';
+const CODIGO_GRUPO = 'MUNDIAL26';
 
 // ─── BANDERAS ────────────────────────────────────────────────
 const FLAGS = {
@@ -571,7 +457,7 @@ const FLAGS = {
 
 // ─── STATE ───────────────────────────────────────────────────
 let currentPhase = 'grupos';
-let currentUser  = localStorage.getItem('cachorros-prode-user') || null;
+let currentUser  = localStorage.getItem('prode-user') || null;
 let allMatches   = [];
 let prodes       = {};
 let pendientes   = {};
@@ -977,7 +863,7 @@ function showError(msg) {
 
 async function loginAs(name) {
   currentUser = name;
-  localStorage.setItem('cachorros-prode-user', name);
+  localStorage.setItem('prode-user', name);
   updateNavUser();
   showToast(`bienvenido, ${name} ✓`);
   // Cargar datos en segundo plano sin bloquear
@@ -1054,7 +940,7 @@ async function loadStats() {
 async function logoutUser() {
   await window.firebaseSignOut(window.firebaseAuth);
   currentUser = null;
-  localStorage.removeItem('cachorros-prode-user');
+  localStorage.removeItem('prode-user');
   prodes = {}; pendientes = {};
   updateNavUser(); renderMatches(); renderBoard([]);
   document.getElementById('section-stats').style.display = 'none';

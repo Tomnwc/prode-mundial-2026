@@ -345,16 +345,16 @@
       <div style="font-size:.7rem;color:var(--muted)" id="stat-correctos-pct"></div>
     </div>
     <div class="stat-card" style="background:var(--bg-dark);padding:2rem">
-      <div class="section-label">posición en el grupo</div>
+      <div class="section-label">posición</div>
       <div style="font-family:'Manrope',sans-serif;font-weight:900;font-size:3.5rem;color:var(--white)" id="stat-pos">—</div>
       <div style="font-size:.7rem;color:var(--muted)" id="stat-vs-avg"></div>
     </div>
     <div class="stat-card" style="background:var(--bg-dark);padding:2rem">
-      <div class="section-label">pronósticos cargados</div>
+      <div class="section-label">cargados</div>
       <div style="font-family:'Manrope',sans-serif;font-weight:900;font-size:3.5rem;color:var(--white)" id="stat-cargados">—</div>
     </div>
     <div class="stat-card" style="background:var(--bg-dark);padding:2rem">
-      <div class="section-label">racha actual</div>
+      <div class="section-label">racha</div>
       <div style="font-family:'Manrope',sans-serif;font-weight:900;font-size:3.5rem;color:var(--white)" id="stat-racha">—</div>
       <div style="font-size:.7rem;color:var(--muted)" id="stat-racha-label"></div>
     </div>
@@ -927,8 +927,8 @@ async function loadStats() {
     document.getElementById('stat-pos').textContent = pos + '°';
     document.getElementById('stat-vs-avg').textContent = diffAvg > 0 ? '+' + diffAvg + ' pts vs el promedio' : diffAvg + ' pts vs el promedio';
     document.getElementById('stat-cargados').textContent = myStats.pronosticados;
-    document.getElementById('stat-racha').textContent = racha;
-    document.getElementById('stat-racha-label').textContent = 'seguidos de ' + rachaDir;
+    document.getElementById('stat-racha').textContent = racha || '—';
+    document.getElementById('stat-racha-label').textContent = racha > 0 ? racha + ' seguidos de ' + rachaDir : 'sin partidos jugados aún';
 
     document.getElementById('section-stats').style.display = 'block';
     document.getElementById('nav-stats').style.display = 'inline';

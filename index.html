@@ -384,6 +384,7 @@
       <input type="text" id="modal-name" placeholder="Diego Armando">
     </div>
     <div id="modal-error" style="color:#ff4444;font-size:.7rem;margin-top:.5rem;display:none"></div>
+    <p id="modal-forgot" style="font-size:.65rem;color:var(--muted);margin-top:.5rem;cursor:pointer" onclick="resetPassword()">¿Olvidaste tu contraseña?</p>
     <div class="modal-actions">
       <button class="btn" id="modal-btn-login" onclick="loginUser()">entrar →</button>
       <button class="btn btn-outline" id="modal-btn-register" onclick="loginUser()" style="display:none">crear cuenta →</button>
@@ -753,6 +754,8 @@ function switchToRegister() {
   document.getElementById('modal-btn-register').style.display = 'inline-block';
   document.getElementById('modal-switch-link').textContent = '¿Ya tenés cuenta? Iniciar sesión';
   document.getElementById('modal-switch-link').onclick = switchToLogin;
+  const forgot = document.getElementById('modal-forgot');
+  if (forgot) forgot.style.display = 'none';
 }
 
 function switchToLogin() {
@@ -764,6 +767,8 @@ function switchToLogin() {
   document.getElementById('modal-btn-register').style.display = 'none';
   document.getElementById('modal-switch-link').textContent = '¿Primera vez? Crear cuenta';
   document.getElementById('modal-switch-link').onclick = switchToRegister;
+  const forgot = document.getElementById('modal-forgot');
+  if (forgot) forgot.style.display = 'block';
 }
 
 async function loginUser() {
@@ -827,6 +832,21 @@ async function loginAs(name) {
   try { prodes = await apiGet({ action:'getPronosticos', usuario:name }); } catch(e) { prodes = {}; }
   renderMatches();
   loadBoard(); // no await — carga en background
+}
+
+async function resetPassword() {
+  const email = document.getElementById('modal-email').value.trim();
+  if (!email) { showError('Ingresá tu mail primero'); return; }
+  try {
+    await window.firebaseAuth.sendPasswordResetEmail(email);
+    showError('');
+    document.getElementById('modal-error').style.color = '#00cc4a';
+    document.getElementById('modal-error').style.display = 'block';
+    document.getElementById('modal-error').textContent = 'Te mandamos un mail para resetear la contraseña ✓';
+  } catch(e) {
+    if (e.code === 'auth/user-not-found') showError('No hay cuenta con ese mail.');
+    else showError('Error: ' + e.message);
+  }
 }
 
 async function logoutUser() {

@@ -1157,11 +1157,13 @@ function waitForFirebase(callback) {
   }, 100);
 }
 
-waitForFirebase(() => {
+waitForFirebase(async () => {
   if (window.currentUser) {
     updateNavUser();
+    try { prodes = await apiGet({ action:'getPronosticos', usuario:window.currentUser }); } catch(e) { prodes = {}; }
   }
-  init();
+  await init();
+  if (window.currentUser) loadStats();
 });
 </script>
 </body>

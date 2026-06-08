@@ -369,7 +369,7 @@
   
   <div style="margin-bottom:2rem">
     <div class="section-label" style="margin-bottom:1rem">resumen</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:var(--border)">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
       <div style="background:var(--bg-dark);padding:1.5rem">
         <div class="section-label">participantes</div>
         <div style="font-size:2.5rem;font-weight:900;color:var(--white)" id="admin-total-users">—</div>
@@ -827,7 +827,8 @@ async function joinGroup() {
   
   if (currentUser) {
     // Ya está logueado, registrar directo
-    try { await apiPost({ action:'registrarUsuario', nombre:currentUser, codigo:code }); } catch(e) {}
+    const userEmail = window._firebaseUser ? window._firebaseUser.email : '';
+    try { await apiPost({ action:'registrarUsuario', nombre:currentUser, codigo:code, mail:userEmail }); } catch(e) {}
     showToast(`¡Bienvenido al grupo, ${currentUser}! ✓`);
     scrollToSection('section-matches');
   } else {
@@ -885,6 +886,8 @@ async function loginUser() {
     try {
       const cred = await window.firebaseCreateUser(window.firebaseAuth, email, password);
       await window.firebaseUpdateProfile(cred.user, { displayName: name });
+      // Guardar mail en el Sheet
+      try { await apiPost({ action:'registrarUsuario', nombre:name, codigo:CODIGO_GRUPO, mail:email }); } catch(e2) {}
       await loginAs(name);
       closeModal();
     } catch(e) {
@@ -1024,7 +1027,7 @@ async function loadAdmin() {
       body.innerHTML = tabla.map(p => `
         <tr class="board-row">
           <td class="board-name">${p.name}</td>
-          <td style="font-size:.75rem;color:var(--muted)">—</td>
+          <td style="font-size:.75rem;color:var(--muted)">${p.mail || '—'}</td>
           <td style="text-align:right;font-size:.85rem">${p.pronosticados}</td>
           <td class="board-pts" style="font-size:1.2rem">${p.pts}</td>
         </tr>
